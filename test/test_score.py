@@ -11,7 +11,7 @@ class TestScores(unittest.TestCase):
         """
         total = 900
         result = 287.72
-        self.assertEqual(wilkscore(total, 0.3196888888888889), result)
+        self.assertEqual(round(wilkscore('lbs', total, 0.70480093476), 2), result)
 
 
 if __name__ == '__main__':
