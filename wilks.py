@@ -75,23 +75,27 @@ def wilkscore(units, total, coef):
 
 def calc():
     print("\nWilk's Calculator\n")
-    unit = int(input("1. Lbs"
-                 "\n2. Kh"))
+    print("1. Lbs"
+          "\n2. Kh\n")
+    unit = int(input("\n>>> "))
     if unit == 1:
         unit = "lbs"
     elif unit == 2:
         unit = "kg"
-    sex = int(input("1. Male"
-                    "\n2. Female"))
+    print("\n1. Male"
+                    "\n2. Female")
+    sex = int(input("\n>>> "))
     if sex == 1:
         sex = 'male'
     elif sex == 2:
-        raise NotImplementedError
+        sex = 'female'
     else:
         calc()
 
-    weight = float(input("\nBody weight: "))
-    total = float(input("\nTotal weight lifted: "))
+    print("\nBody weight: ")
+    weight = float(input("\n>>> "))
+    print("\nTotal weight lifted: ")
+    total = float(input("\n>>> "))
     score = round(wilkscore(unit, total, coef(unit, sex, weight)), 2)
     print("\n** Your Wilk's score is {0} **".format(score))
 
