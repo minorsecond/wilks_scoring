@@ -5,7 +5,9 @@ A short wilks score powerlifting utility to record
 and compare your wilks score to other lifters
  """
 import csv
+from numpy import genfromtxt
 
+csvpath = './data/openpowerlifting.csv'
 
 def unitconvert(number):
     """
@@ -75,28 +77,73 @@ def wilkscore(units, total, coef):
     return score
 
 
-def parse_results(csvpath):
+def filter(csvpath, critereon):
     """
     parse powerlifting results based on sex, gear, age, etc.
     Uses output from https://github.com/sstangl/openpowerlifting
+    :param csvpath: Path to CSV file containing meet results
+    :param reqs: a dict of requested lifter characteristics (sex, age class, weight class, equipped, division)
     :return:
     """
-    # Build a dict of lists based on column names in csv file.
-    d = {}
+    # TODO - When athlete is listed multiple times, only use highest wilks score in statistics
     columns = ['Name', 'Place', 'Division', 'Sex', 'Equipment', 'WeightClassKg', 'BodyweightKg', 'Age', 'BestSquatKg',
                'BestBenchKg', 'BestDeadliftKg', 'TotalKg', 'Wilks', 'McCulloch']
-    for i in columns:
-        d['{}'.format(i)] = []
-    print(d)
 
-    dictReader = csv.DictReader(open('{}'.format(csvpath), 'rt'), fieldnames=columns, delimiter=',')
+    with open(csvpath, "rt") as csvfile:
+        datareader = csv.reader(csvfile)
+        count = 0
+        sex = "M"
+        wclass = "74.84"
+        age = "28"
+        name = []
+        for row in datareader:
+            if row[15]:
+                if row[3] == "{0}".format(sex) and row[5] == "{0}".format(wclass) and row[7] == "{0}".format(age):
+                    _name = str(row[0])
+                    if _name in name:
+                        wilk = float(0)
+                        _wilk = float(row[15])
+                        while wilk < _wilk:
+                            wilk = float(row[15])
+                        if row[15] == wilk:
+                            yield row
+                            count += 1
+                    else:
+                        name.append(_name)
+                        yield row
+                        count += 1
 
-    for row in dictReader:
-        for key in row:
-            if key:
-                d[key].append(row[key])
-    return d
+                elif count < 10000:
+                    continue
+                else:
+                    return
 
+
+def parser_csv(csvpath):
+    """
+    Parse CSV after filtering
+    :param csvpath:
+    :return:
+    """
+    criteria = ["M", '74.84', '28']
+    for critereon in criteria:
+        for row in filter(csvpath, critereon):
+            yield row
+
+
+def main_menu():
+    print("Powerlifting Tools\n"
+          "Main Menu\n\n"
+          "1. Calculate Wilks Score\n"
+          "2. Compare Wilks Score\n")
+    answer = int(input(">>> "))
+    if answer == 1:
+        calc()
+    elif answer == 2:
+        for row in parser_csv(csvpath):
+            print(row)
+    else:
+        main_menu()
 
 def calc():
     print("\nWilk's Calculator\n")
@@ -127,4 +174,4 @@ def calc():
     calc()
 
 if __name__ == '__main__':
-    calc()
+    main_menu()
