@@ -4,6 +4,8 @@ Author = Robert Ross Wardrup
 A short wilks score powerlifting utility to record
 and compare your wilks score to other lifters
  """
+import csv
+
 
 def unitconvert(number):
     """
@@ -73,6 +75,29 @@ def wilkscore(units, total, coef):
     return score
 
 
+def parse_results(csvpath):
+    """
+    parse powerlifting results based on sex, gear, age, etc.
+    Uses output from https://github.com/sstangl/openpowerlifting
+    :return:
+    """
+    # Build a dict of lists based on column names in csv file.
+    d = {}
+    columns = ['Name', 'Place', 'Division', 'Sex', 'Equipment', 'WeightClassKg', 'BodyweightKg', 'Age', 'BestSquatKg',
+               'BestBenchKg', 'BestDeadliftKg', 'TotalKg', 'Wilks', 'McCulloch']
+    for i in columns:
+        d['{}'.format(i)] = []
+    print(d)
+
+    dictReader = csv.DictReader(open('{}'.format(csvpath), 'rt'), fieldnames=columns, delimiter=',')
+
+    for row in dictReader:
+        for key in row:
+            if key:
+                d[key].append(row[key])
+    return d
+
+
 def calc():
     print("\nWilk's Calculator\n")
     print("1. Lbs"
@@ -98,7 +123,8 @@ def calc():
     total = float(input("\n>>> "))
     score = round(wilkscore(unit, total, coef(unit, sex, weight)), 2)
     print("\n** Your Wilk's score is {0} **".format(score))
-
+    input("\n Press enter to return to calculation input screen.")
+    calc()
 
 if __name__ == '__main__':
     calc()
