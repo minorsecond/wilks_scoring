@@ -5,7 +5,9 @@ A short wilks score powerlifting utility to record
 and compare your wilks score to other lifters
  """
 import csv
-from numpy import genfromtxt
+import numpy as np
+import scipy as sp
+import scipy.stats
 
 csvpath = './data/openpowerlifting.csv'
 
@@ -77,7 +79,7 @@ def wilkscore(units, total, coef):
     return score
 
 
-def filter(csvpath, critereon):
+def filter(csvpath):
     """
     parse powerlifting results based on sex, gear, age, etc.
     Uses output from https://github.com/sstangl/openpowerlifting
@@ -94,41 +96,29 @@ def filter(csvpath, critereon):
         count = 0
         sex = "M"
         wclass = "74.84"
-        age = "28"
-        name = []
+        wilks = []
         for row in datareader:
             if row[15]:
-                if row[3] == "{0}".format(sex) and row[5] == "{0}".format(wclass) and row[7] == "{0}".format(age):
-                    _name = str(row[0])
-                    if _name in name:
-                        wilk = float(0)
-                        _wilk = float(row[15])
-                        while wilk < _wilk:
-                            wilk = float(row[15])
-                        if row[15] == wilk:
-                            yield row
-                            count += 1
-                    else:
-                        name.append(_name)
-                        yield row
-                        count += 1
-
-                elif count < 10000:
-                    continue
-                else:
-                    return
+                if row[3] == "{0}".format(sex) and row[5] == "{0}".format(wclass):
+                    w = float(row[15])
+                    wilks.append(w)
+                    count += 1
+        return wilks
 
 
-def parser_csv(csvpath):
+def mean_ci(data, confidence=0.95):
     """
-    Parse CSV after filtering
-    :param csvpath:
+    Calculate mean and confidence intervals for Wilk's scores
+    :param data:
+    :param confidence:
     :return:
     """
-    criteria = ["M", '74.84', '28']
-    for critereon in criteria:
-        for row in filter(csvpath, critereon):
-            yield row
+    a = 1.0*np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * sp.stats.t._ppf((1 + confidence) / 2., n-1)
+
+    return m, m-h, m+h
 
 
 def main_menu():
@@ -140,10 +130,13 @@ def main_menu():
     if answer == 1:
         calc()
     elif answer == 2:
-        for row in parser_csv(csvpath):
-            print(row)
+        w = input(("Enter your Wilk's score: "))
+        wilks = filter(csvpath)
+        mean, lc, hc = mean_ci(wilks)
+        print()
     else:
         main_menu()
+
 
 def calc():
     print("\nWilk's Calculator\n")
