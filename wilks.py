@@ -15,16 +15,34 @@ def coef(sex, weight):
     :return coef: Wilk's coefficient
     """
 
-    coef = 0
+    w_coef = 0
+    coefs = dict.fromkeys(['a', 'b', 'c', 'd', 'e', 'f'], 0)
     weight = int(weight)
-    if sex == 'male':
-        coef = 500 / (216.0475144 + (16.2606339 * weight) +
-                      (0.002388645 * weight ** 2) +
-                      (-0.002388645 * weight ** 3) + (7.01863 * 10 ** -6)
-                      + (-1.291 * 10 ** -8))
-    print(coef)
 
-    return coef
+    if sex == 'male':
+        coefs['a'] = -216.0475144
+        coefs['b'] = 16.2606339
+        coefs['c'] = -0.002388645
+        coefs['d'] = -0.00113732
+        coefs['e'] = 7.01863E-06
+        coefs['f'] = -1.291E-08
+
+    elif sex == 'female':
+        coefs['a'] = 594.31747775582
+        coefs['b'] = -27.23842536447
+        coefs['c'] = 0.82112226871
+        coefs['d'] = -0.00930733913
+        coefs['e'] = 0.00004731582
+        coefs['f'] = -0.00000009054
+
+    cs = sorted(coefs.items())
+    a, b, c, d, e, f = [v[1] for v in cs]
+
+
+    w_coef = 500 / (a + (b * weight) + (c * (weight ** 2)) + (d * (weight ** 3)) + (e * (weight ** 4))
+                    + (f * (weight ** 5)))
+
+    return w_coef
 
 
 def wilkscore(total, coef):
