@@ -11,9 +11,9 @@ class MyTestCase(unittest.TestCase):
         :return:
         """
         weight = 168
-        result = 0.3196888888888889
+        result = 0.705
 
-        self.assertEqual(coef('male', weight), result)
+        self.assertEqual(round(coef('lbs', 'male', weight), 3), result)
 
 if __name__ == '__main__':
     unittest.main()
