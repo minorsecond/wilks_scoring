@@ -10,7 +10,9 @@ import numpy as np
 import scipy as sp
 import scipy.stats
 
-csvPath = './data/openpowerlifting.csv'
+#TODO: Enable Z-score printing to create a ranking system
+
+csvPath = './data/openpowerlifting.csv'  # Data file
 
 def unitConvert(number):
     """
@@ -103,8 +105,12 @@ def filter(csvpath, sex, weight):
     weight2 = 0
     wilks = []
     weight = int(unitConvert(weight))
+    division = 0
+
+    #TODO: Find a better method for setting up these ranges, to allow floats
 
     if sex == "M":
+        division = "Open Men"
         if weight in range(0, 62):
             weight1 = 0
             weight2 = 63
@@ -121,6 +127,7 @@ def filter(csvpath, sex, weight):
             weight1 = 98
             weight2 = 108
     elif sex == 'F':
+        division = "Open Women"
         if weight in range(0, 43):
             weight1 = 0
             weight2 = 43
@@ -154,21 +161,23 @@ def filter(csvpath, sex, weight):
     with open(csvPath, "rt") as csvFile:
         dataReader = csv.reader(csvFile)
         count = 0
-        equip = "Raw"
+        equip = "Raw"  # Filter only raw lifters
         for row in dataReader:
             try:
                 float(row[5])
                 validWc = True  # Check weight class
             except ValueError:
                 validWc = False
-                pass
+                pass  # This is not ideal.
             if validWc:
-                if row[15]:
-                    if row[3] == "{0}".format(sex) and row[4] == "{0}". \
-                        format(equip) and float(row[5]) >= float(weight1) \
-                            and float(row[5]) <= float(weight2):
-                        w = float(row[15])
-                        wilks.append(w)
+                if row[15] and row[2]:
+                    if row[2] == "{0}".format(division):
+                        if row[3] == "{0}".format(sex) \
+                        and row[4] == "{0}".format(equip) \
+                        and float(row[5]) >= float(weight1) \
+                        and float(row[5]) <= float(weight2):
+                            w = float(row[15])
+                            wilks.append(w)
 
                     count += 1
     return wilks
@@ -201,7 +210,7 @@ def wilks_target(sex, weight):
     competitive wilks score.
     :return:
     """
-    wilks = filter(csvPath, sex, weight)  #TODO: Filter by division and equipped/raw
+    wilks = filter(csvPath, sex, weight)
     if len(wilks) == 0:  # If the filter returns an empty line, error out
         raise ValueError
     else:
@@ -278,6 +287,9 @@ def main_menu():
             print("Your score is in the 75th percentile of lifts, {0} to "
                   "{1} points. You should compete!"
                   .format(p50, p75))
+        elif score > p75:
+            print("Your score is above the 75th percentile, {0}. You should compete!"
+                  .format(p75))
 
         input("\nPress enter to return to main menu")
         main_menu()
