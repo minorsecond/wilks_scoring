@@ -113,28 +113,28 @@ def filter(csvpath, sex, weight):
         division = "Open Men"
         if weight in range(0, 53):
             weight1 = 0
-            weight2 = 53
+            weight2 = 52.99
         elif weight in range(53, 59):
             weight1 = 53
-            weight2 = 59
+            weight2 = 59.99
         elif weight in range(59, 66):
             weight1 = 59
-            weight2 = 66
+            weight2 = 65.99
         elif weight in range(66, 74):
             weight1 = 66
-            weight2 = 74
+            weight2 = 73.99
         elif weight in range(74, 83):
             weight1 = 74
-            weight2 = 83
+            weight2 = 82.99
         elif weight in range(83, 93):
             weight1 = 83
-            weight2 = 93
+            weight2 = 92.99
         elif weight in range(93, 105):
             weight1 = 93
-            weight2 = 105
+            weight2 = 104.99
         elif weight in range(105, 120):
             weight1 = 105
-            weight2 = 120
+            weight2 = 119.99
         elif weight in range(120, 99999):
             weight1 = 120
             weight2 = 99999
@@ -143,31 +143,31 @@ def filter(csvpath, sex, weight):
         division = "Open Women"
         if weight in range(0, 43):
             weight1 = 0
-            weight2 = 53
+            weight2 = 52.99
 
         elif weight in range(43, 47):
             weight1 = 53
-            weight2 = 59
+            weight2 = 58.99
 
         elif weight in range(47, 52):
             weight1 = 47
-            weight2 = 52
+            weight2 = 51.99
 
         elif weight in range(52, 57):
             weight1 = 52
-            weight2 = 57
+            weight2 = 56.99
 
         elif weight in range(57, 63):
             weight1 = 57
-            weight2 = 63
+            weight2 = 62.99
 
         elif weight in range(63, 72):
             weight1 = 63
-            weight2 = 72
+            weight2 = 71.99
 
         elif weight in range(72, 84):
             weight1 = 72
-            weight2 = 84
+            weight2 = 83.99
 
     print("You're in the {0}k weight class.".format(weight1))  # Print weight class
 
