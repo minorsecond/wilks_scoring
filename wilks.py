@@ -99,7 +99,6 @@ def filter(csvpath, sex, weight):
     weight class, equipped, division)
     :return:
     """
-    # TODO: Check these weight classes and fix.
 
     weight1 = 0
     weight2 = 0
