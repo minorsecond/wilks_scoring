@@ -10,9 +10,9 @@ import numpy as np
 import scipy as sp
 import scipy.stats
 
-csvpath = './data/openpowerlifting.csv'
+csvPath = './data/openpowerlifting.csv'
 
-def unitconvert(number):
+def unitConvert(number):
     """
     Converts lbs to kg
     :param number: Number to convert
@@ -32,9 +32,9 @@ def coef(units, sex, weight):
     :return coef: Wilk's coefficient
     """
     if units == "lbs":
-        weight = unitconvert(weight)
+        weight = unitConvert(weight)
 
-    w_coef = 0
+    #w_coef = 0
     coefs = dict.fromkeys(['a', 'b', 'c', 'd', 'e', 'f'], 0)
 
     if sex == 'M':
@@ -65,14 +65,14 @@ def coef(units, sex, weight):
     return w_coef
 
 
-def wilkscore(units, total, coef):
+def wilkScore(units, total, coef):
     """
     Determine's Wilk's score based on lifter's total.
     :param total: Lifter's total weight lifted
     :return: Score of time int
     """
     if units == 'lbs':
-        total = unitconvert(total)
+        total = unitConvert(total)
 
     total = float(total)
     score = total * coef
@@ -80,7 +80,7 @@ def wilkscore(units, total, coef):
     return score
 
 
-def frange(x, y):
+def fRange(x, y):
     step = 0.01
     r = []
     while x < y:
@@ -97,18 +97,19 @@ def filter(csvpath, sex, weight):
     weight class, equipped, division)
     :return:
     """
+    # TODO: Check these weight classes and fix.
 
     weight1 = 0
     weight2 = 0
     wilks = []
-    weight = int(unitconvert(weight))
+    weight = int(unitConvert(weight))
 
     if sex == "M":
         if weight in range(0, 62):
             weight1 = 0
-            weight2 = 62
+            weight2 = 63
         elif weight in range(62, 79):
-            weight1 = 62
+            weight1 = 63
             weight2 = 79
         elif weight in range(79, 88):
             weight1 = 79
@@ -120,25 +121,48 @@ def filter(csvpath, sex, weight):
             weight1 = 98
             weight2 = 108
     elif sex == 'F':
-        if weight in range(0, 50):
+        if weight in range(0, 43):
             weight1 = 0
-            weight2 = 50
-        elif weight in range(51, 61):
-            weight1 = 51
-            weight2 = 61
+            weight2 = 43
 
-    with open(csvpath, "rt") as csvfile:
-        datareader = csv.reader(csvfile)
+        elif weight in range(43, 47):
+            weight1 = 43
+            weight2 = 47
+
+        elif weight in range(47, 52):
+            weight1 = 47
+            weight2 = 52
+
+        elif weight in range(52, 57):
+            weight1 = 52
+            weight2 = 57
+
+        elif weight in range(57, 63):
+            weight1 = 57
+            weight2 = 63
+
+        elif weight in range(63, 72):
+            weight1 = 63
+            weight2 = 72
+
+        elif weight in range(72, 84):
+            weight1 = 72
+            weight2 = 84
+
+    print("You're in the {0}k weight class.".format(weight1))  # Print weight class
+
+    with open(csvPath, "rt") as csvFile:
+        dataReader = csv.reader(csvFile)
         count = 0
         equip = "Raw"
-        for row in datareader:
+        for row in dataReader:
             try:
                 float(row[5])
-                validwc = True
+                validWc = True  # Check weight class
             except ValueError:
-                validwc = False
+                validWc = False
                 pass
-            if validwc:
+            if validWc:
                 if row[15]:
                     if row[3] == "{0}".format(sex) and row[4] == "{0}". \
                         format(equip) and float(row[5]) >= float(weight1) \
@@ -177,8 +201,8 @@ def wilks_target(sex, weight):
     competitive wilks score.
     :return:
     """
-    wilks = filter(csvpath, sex, weight)
-    if len(wilks) == 0:
+    wilks = filter(csvPath, sex, weight)  #TODO: Filter by division and equipped/raw
+    if len(wilks) == 0:  # If the filter returns an empty line, error out
         raise ValueError
     else:
         mean, lc, hc, p25, p50, p75 = mean_ci(wilks)
@@ -186,8 +210,8 @@ def wilks_target(sex, weight):
         w = 0
         total_ath = len(wilks)
 
-        while w < hc and w < p50:
-            w = wilkscore('lbs', total, coef('lbs', sex, weight))
+        while w < p75:  # iterate through totals until your Wilks exceeds the expected value (p75)
+            w = wilkScore('lbs', total, coef('lbs', sex, weight))
             total += 1
 
     print("\nBased on {0} observations.. In order to obtain a competitive score "
@@ -222,8 +246,8 @@ def main_menu():
 
         total = float(input(("\nEnter total weight lifted in lbs: ")))
 
-        score = round(wilkscore('lbs', total, coef('lbs', sex, weight)), 2)
-        wilks = filter(csvpath, sex, weight)
+        score = round(wilkScore('lbs', total, coef('lbs', sex, weight)), 2)
+        wilks = filter(csvPath, sex, weight)
         athletes = len(wilks)
         mean, lc, hc, p25, p50, p75 = mean_ci(wilks)
 
@@ -299,7 +323,7 @@ def calc():
     weight = float(input("\n>>> "))
     print("\nTotal weight lifted: ")
     total = float(input("\n>>> "))
-    score = round(wilkscore(unit, total, coef(unit, sex, weight)), 2)
+    score = round(wilkScore(unit, total, coef(unit, sex, weight)), 2)
     print("\n** Your Wilk's score is {0} **".format(score))
     input("\n Press enter to return to calculation input screen.")
     calc()
