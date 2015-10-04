@@ -11,6 +11,7 @@ import scipy as sp
 import scipy.stats
 
 #TODO: Enable Z-score printing to create a ranking system
+#TODO: Incorporate code from openpowerlifting tool
 
 csvPath = './data/openpowerlifting.csv'  # Data file
 
@@ -110,30 +111,43 @@ def filter(csvpath, sex, weight):
 
     if sex == "M":
         division = "Open Men"
-        if weight in range(0, 62):
+        if weight in range(0, 53):
             weight1 = 0
-            weight2 = 63
-        elif weight in range(62, 79):
-            weight1 = 63
-            weight2 = 79
-        elif weight in range(79, 88):
-            weight1 = 79
-            weight2 = 88
-        elif weight in range(88, 98):
-            weight1 = 88
-            weight2 = 98
-        elif weight in range(98, 108):
-            weight1 = 98
-            weight2 = 108
+            weight2 = 53
+        elif weight in range(53, 59):
+            weight1 = 53
+            weight2 = 59
+        elif weight in range(59, 66):
+            weight1 = 59
+            weight2 = 66
+        elif weight in range(66, 74):
+            weight1 = 66
+            weight2 = 74
+        elif weight in range(74, 83):
+            weight1 = 74
+            weight2 = 83
+        elif weight in range(83, 93):
+            weight1 = 83
+            weight2 = 93
+        elif weight in range(93, 105):
+            weight1 = 93
+            weight2 = 105
+        elif weight in range(105, 120):
+            weight1 = 105
+            weight2 = 120
+        elif weight in range(120, 99999):
+            weight1 = 120
+            weight2 = 99999
+
     elif sex == 'F':
         division = "Open Women"
         if weight in range(0, 43):
             weight1 = 0
-            weight2 = 43
+            weight2 = 53
 
         elif weight in range(43, 47):
-            weight1 = 43
-            weight2 = 47
+            weight1 = 53
+            weight2 = 59
 
         elif weight in range(47, 52):
             weight1 = 47
