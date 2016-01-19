@@ -111,12 +111,9 @@ def filter(csvpath, sex, weight):
 
     if sex == "M":
         division = "Open Men"
-        if weight in range(0, 53):
-            weight1 = 0
-            weight2 = 52.99
-        elif weight in range(53, 59):
+        if weight in range(0, 59):
             weight1 = 53
-            weight2 = 59.99
+            weight2 = 58.99
         elif weight in range(59, 66):
             weight1 = 59
             weight2 = 65.99
@@ -141,11 +138,7 @@ def filter(csvpath, sex, weight):
 
     elif sex == 'F':
         division = "Open Women"
-        if weight in range(0, 43):
-            weight1 = 0
-            weight2 = 52.99
-
-        elif weight in range(43, 47):
+        if weight in range(0, 47):
             weight1 = 53
             weight2 = 58.99
 
@@ -328,7 +321,7 @@ def main_menu():
 def calc():
     print("\nWilk's Calculator\n")
     print("1. Lbs"
-          "\n2. Kh\n")
+          "\n2. Kg\n")
     unit = int(input("\n>>> "))
     if unit == 1:
         unit = "lbs"
@@ -338,7 +331,7 @@ def calc():
                     "\n2. Female")
     sex = int(input("\n>>> "))
     if sex == 1:
-        sex = 'F'
+        sex = 'M'
     elif sex == 2:
         sex = 'F'
     else:
