@@ -114,55 +114,60 @@ def filter(csvpath, sex, weight):
         if weight in range(0, 59):
             weight1 = 53
             weight2 = 58.99
+            wc = 59
         elif weight in range(59, 66):
             weight1 = 59
             weight2 = 65.99
+            wc = 66
         elif weight in range(66, 74):
             weight1 = 66
             weight2 = 73.99
+            wc = 74
         elif weight in range(74, 83):
             weight1 = 74
             weight2 = 82.99
+            wc = 83
         elif weight in range(83, 93):
             weight1 = 83
             weight2 = 92.99
+            wc = 93
         elif weight in range(93, 105):
             weight1 = 93
             weight2 = 104.99
+            wc = 105
         elif weight in range(105, 120):
             weight1 = 105
             weight2 = 119.99
+            wc = 120
         elif weight in range(120, 99999):
             weight1 = 120
             weight2 = 99999
+            wc = SHW
 
     elif sex == 'F':
         division = "Open Women"
-        if weight in range(0, 47):
-            weight1 = 53
-            weight2 = 58.99
 
-        elif weight in range(47, 52):
+        if weight in range(0, 52):
             weight1 = 47
             weight2 = 51.99
-
+            wc = 52
         elif weight in range(52, 57):
             weight1 = 52
             weight2 = 56.99
-
+            wc = 57
         elif weight in range(57, 63):
             weight1 = 57
             weight2 = 62.99
-
+            wc = 63
         elif weight in range(63, 72):
             weight1 = 63
             weight2 = 71.99
-
+            wc = 72
         elif weight in range(72, 84):
             weight1 = 72
             weight2 = 83.99
-
-    print("You're in the {0}k weight class.".format(weight1))  # Print weight class
+            wc = 84
+    print("You're in the {0}k weight class.".format(wc))  # Print weight class
 
     with open(csvPath, "rt") as csvFile:
         dataReader = csv.reader(csvFile)
@@ -227,7 +232,7 @@ def wilks_target(sex, weight):
 
         while w < p75:  # iterate through totals until your Wilks exceeds the expected value (p75)
             w = wilkScore('lbs', total, coef('lbs', sex, weight))
-            total += 1
+            total += 1 #TODO: Change this to weights usable at meets (go by 2.5 kg)
 
     print("\nBased on {0} observations.. In order to obtain a competitive score "
           "at your bodyweight, you'd need to lift a total of {1} lbs, "
@@ -310,7 +315,7 @@ def main_menu():
         elif sex == 2:
             sex = 'F'
         print("Body weight: \n")
-        weight = int(input(">>> "))
+        weight = float(input(">>> "))
 
         wilks_target(sex, weight)
 
